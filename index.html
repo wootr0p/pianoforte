@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#3b1022">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pianoforte">
+  <title>Giochi per pianoforte</title>
+  <link rel="manifest" href="/pianoforte/manifest.webmanifest">
+  <link rel="icon" href="/pianoforte/icone/icona.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/pianoforte/icone/apple-touch-icon.png">
+  <style>
+    @font-face {
+      font-family: 'Bodoni Moda';
+      src: url('/pianoforte/comune/font/bodoni-moda.woff2') format('woff2-variations'), url('/pianoforte/comune/font/bodoni-moda.woff2') format('woff2');
+      font-weight: 400 900;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: dark;
+      --felt: #3b1022;
+      --felt-deep: #26091a;
+      --ivory: #f3ebdd;
+      --ivory-soft: rgba(243, 235, 221, 0.72);
+      --ivory-faint: rgba(243, 235, 221, 0.18);
+      --lacquer: #140b0e;
+      --key: oklch(0.8 0.13 90);
+      --key-strong: oklch(0.7 0.15 90);
+      --wrong: oklch(0.78 0.13 25);
+      --serif: 'Bodoni Moda', 'Bodoni 72', Didot, 'Bodoni MT', Georgia, serif;
+      --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: var(--sans);
+      font-size: 1rem;
+      line-height: 1.45;
+      color: var(--ivory);
+      background-color: var(--felt);
+      background-image:
+        radial-gradient(120% 80% at 50% 0%, rgba(120, 40, 70, 0.35), transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-attachment: fixed;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    [hidden] { display: none !important; }
+
+    :focus-visible {
+      outline: 3px solid var(--key);
+      outline-offset: 3px;
+    }
+
+    main {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: calc(min(14vh, 96px) + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) calc(32px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    }
+
+    h1 {
+      margin: 18px 0 14px;
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 12vw, 3.6rem);
+      font-weight: 560;
+      font-variation-settings: 'opsz' 96;
+      line-height: 0.98;
+      letter-spacing: -0.01em;
+    }
+
+    .intro {
+      max-width: 32ch;
+      margin: 0 0 28px;
+      color: var(--ivory-soft);
+      font-size: 1.0625rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .campo {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid rgba(243, 235, 221, 0.32);
+      border-radius: 14px;
+      background: rgba(20, 11, 14, 0.45);
+    }
+
+    .campo:focus-within {
+      border-color: var(--key);
+      box-shadow: 0 0 0 1px var(--key);
+    }
+
+    .campo input:focus-visible {
+      outline: none;
+    }
+
+    .campo[data-errore] {
+      border-color: var(--wrong);
+      box-shadow: 0 0 0 1px var(--wrong);
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      min-height: 56px;
+      padding: 0 16px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-size: 1.125rem;
+      outline: none;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .mostra {
+      padding: 0 16px;
+      border: 0;
+      border-radius: 0 14px 14px 0;
+      background: transparent;
+      color: var(--ivory-soft);
+      font-size: 0.875rem;
+    }
+
+    .entra {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 56px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--key);
+      color: var(--felt-deep);
+      font-weight: 650;
+      font-size: 1.0625rem;
+      box-shadow: 0 6px 20px -8px oklch(0.7 0.16 90 / 0.7);
+    }
+
+    .entra:active {
+      transform: scale(0.98);
+      background: var(--key-strong);
+    }
+
+    .entra[disabled] {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .messaggio {
+      min-height: 1.45em;
+      margin: 10px 0 0;
+      color: var(--wrong);
+      font-weight: 550;
+    }
+
+    .nota {
+      margin: 22px 0 0;
+      color: var(--ivory-soft);
+      font-size: 0.8125rem;
+    }
+
+    .avviso {
+      margin: 0;
+      font-size: 1.0625rem;
+    }
+
+    .avviso a {
+      color: var(--key);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <svg viewBox="0 0 44 22" width="44" height="22" aria-hidden="true">
+      <rect x="0" y="0" width="44" height="22" rx="3" fill="#140b0e"/>
+      <rect x="2" y="3" width="40" height="2" fill="#8e1f3c"/>
+      <g fill="#f3ebdd">
+        <rect x="2.5" y="5" width="7" height="15" rx="1"/>
+        <rect x="10.5" y="5" width="7" height="15" rx="1"/>
+        <rect x="18.5" y="5" width="7" height="15" rx="1"/>
+        <rect x="26.5" y="5" width="7" height="15" rx="1"/>
+        <rect x="34.5" y="5" width="7" height="15" rx="1"/>
+      </g>
+      <g fill="#191113">
+        <rect x="7.6" y="5" width="4.6" height="9" rx="0.8"/>
+        <rect x="15.8" y="5" width="4.6" height="9" rx="0.8"/>
+        <rect x="31.6" y="5" width="4.6" height="9" rx="0.8"/>
+      </g>
+    </svg>
+    <h1>Giochi per pianoforte</h1>
+
+    <div id="accesso">
+      <p class="intro">Il sito è riservato agli amici. Scrivi la password che ti hanno dato.</p>
+      <form id="modulo" novalidate>
+        <input type="text" name="username" value="amici" autocomplete="username" hidden>
+        <label for="password">Password</label>
+        <div class="campo" id="campo">
+          <input id="password" name="password" type="password" autocomplete="current-password"
+                 autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go"
+                 aria-describedby="messaggio nota">
+          <button class="mostra" id="mostra" type="button" aria-controls="password" aria-pressed="false">Mostra</button>
+        </div>
+        <p class="messaggio" id="messaggio" role="alert"></p>
+        <button class="entra" id="entra" type="submit">Entra</button>
+      </form>
+      <p class="nota" id="nota">Maiuscole e spazi non contano. Dopo la prima volta il telefono si ricorda la password.</p>
+    </div>
+
+    <p class="avviso" id="non-supportato" hidden>Questo browser non riesce ad aprire il sito. Aprilo con Safari o Chrome aggiornati, fuori dalla navigazione anonima di Firefox.</p>
+    <p class="avviso" id="mancante" hidden>Questa pagina non c’è. <a href="/pianoforte/">Torna alle sezioni</a></p>
+    <noscript><p class="avviso">Per aprire il sito serve JavaScript.</p></noscript>
+  </main>
+
+  <script src="/pianoforte/apri.js"></script>
+  <script>
+    (function () {
+      const BASE = new URL('/pianoforte/', location.origin).href;
+      const $ = (id) => document.getElementById(id);
+      const modulo = $('modulo'), campo = $('campo'), password = $('password');
+      const entra = $('entra'), mostra = $('mostra'), messaggio = $('messaggio');
+
+      const supportato = 'serviceWorker' in navigator && window.isSecureContext && 'caches' in window
+        && 'indexedDB' in window && 'DecompressionStream' in window && window.crypto && crypto.subtle
+        && typeof BigInt === 'function' && window.GP;
+
+      function vediSolo(id) {
+        $('accesso').hidden = id !== 'accesso';
+        $('non-supportato').hidden = id !== 'non-supportato';
+        $('mancante').hidden = id !== 'mancante';
+      }
+
+      if (!supportato) {
+        vediSolo('non-supportato');
+        return;
+      }
+
+      const registrazione = navigator.serviceWorker.register(BASE + 'sw.js', { scope: BASE });
+
+      function controllato() {
+        if (navigator.serviceWorker.controller) return Promise.resolve();
+        return new Promise((ok) => {
+          navigator.serviceWorker.addEventListener('controllerchange', ok, { once: true });
+          setTimeout(ok, 4000);
+        });
+      }
+
+      async function vaiAlSito() {
+        await registrazione;
+        await navigator.serviceWorker.ready;
+        await controllato();
+        if (navigator.serviceWorker.controller) navigator.serviceWorker.controller.postMessage('rileggi');
+        location.reload();
+      }
+
+      // Già entrato su questo dispositivo: o la pagina non esiste, o il service worker
+      // non ha ancora preso il controllo (ricarico una volta sola).
+      GP.aperto(BASE).then((dentro) => {
+        if (!dentro) return;
+        if (navigator.serviceWorker.controller) {
+          vediSolo('mancante');
+        } else if (!sessionStorage.getItem('gp-ricaricato')) {
+          sessionStorage.setItem('gp-ricaricato', '1');
+          vaiAlSito();
+        }
+      });
+
+      mostra.addEventListener('click', () => {
+        const visibile = password.type === 'password';
+        password.type = visibile ? 'text' : 'password';
+        mostra.textContent = visibile ? 'Nascondi' : 'Mostra';
+        mostra.setAttribute('aria-pressed', String(visibile));
+        password.focus();
+      });
+
+      password.addEventListener('input', () => {
+        messaggio.textContent = '';
+        campo.removeAttribute('data-errore');
+        password.removeAttribute('aria-invalid');
+      });
+
+      function errore(testo) {
+        messaggio.textContent = testo;
+        campo.setAttribute('data-errore', '');
+        password.setAttribute('aria-invalid', 'true');
+        entra.disabled = false;
+        entra.textContent = 'Entra';
+        password.focus();
+        password.select();
+      }
+
+      modulo.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        if (!password.value.trim()) {
+          errore('Scrivi la password.');
+          return;
+        }
+        entra.disabled = true;
+        entra.textContent = 'Apro il sito…';
+        messaggio.textContent = '';
+        try {
+          await GP.entra(password.value, BASE);
+        } catch (e) {
+          if (e.codice === 'password') errore('Password sbagliata. Riprova.');
+          else errore('Non riesco a scaricare il sito. Controlla la connessione e riprova.');
+          return;
+        }
+        if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+        sessionStorage.removeItem('gp-ricaricato');
+        vaiAlSito();
+      });
+    })();
+  </script>
+</body>
+</html>
